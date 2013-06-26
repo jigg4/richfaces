@@ -64,6 +64,10 @@
     <br />
     <br />
 
+    <ui:include src="/includes/event/imageList.xhtml">
+        <ui:param name="event" value="#{event}" />
+    </ui:include>
+    <!-- 
     <r:outputPanel rendered="#{showAlbums}" id="eventAlbums">
         <r:outputPanel rendered="#{fn:length(event.shelf.albums) > 0}">
             <h2>Albums</h2>
@@ -81,4 +85,5 @@
             </ui:include>
         </r:outputPanel>
     </r:outputPanel>
+    -->
 </ui:composition>
