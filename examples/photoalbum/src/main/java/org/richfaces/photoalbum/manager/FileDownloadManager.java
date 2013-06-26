@@ -116,8 +116,10 @@ public class FileDownloadManager implements Serializable {
         for (JSONObject jo : images.values()) {
             if (jo.has("src_big")) {
                 imageUrls.add(jo.getString("src_big"));
-            } else {
+            } else if (jo.has("src")) {
                 imageUrls.add(jo.getString("src"));
+            } else if (jo.has("url")) {
+                imageUrls.add(jo.getString("url"));
             }
         }
     }

@@ -71,6 +71,14 @@
         </r:repeat>
 
         <br style="clear: both" />
+        <r:progressBar id="gBar" value="#{fileDownloadManager.value}" minValue="0" maxValue="100" enabled="#{fileDownloadManager.hasNext()}" interval="1000">
+            <f:facet name="initial">
+                <h:outputText value="" />
+            </f:facet>
+            <h:outputText value="Importing #{fileDownloadManager.text}" />
+            <r:ajax event="begin" listener="#{fileDownloadManager.downloadNext()}"/>
+            <r:ajax event="finish" oncomplete="finishImport()"/>
+        </r:progressBar>
 
         <!-- **Photo fetching** -->
         <!-- save the albums and images into the cache bean, then reload the image list --> 
@@ -87,9 +95,9 @@
 
         <ui:include src="/includes/gplus/albumImport.xhtml" />
 
-        <!-- **Image import** 
+        <!-- **Image import** -->
         <r:jsFunction name="finishImport" render="gBar" execute="@this" actionListener="#{fileDownloadManager.finishDownload()}"
-            oncomplete="reload();" /> -->
+            oncomplete="reload();" />
 
     </r:outputPanel>
 </ui:composition>

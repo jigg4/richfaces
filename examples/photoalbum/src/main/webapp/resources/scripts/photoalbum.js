@@ -396,6 +396,7 @@ var G = {};
          *   {
          *     id: ID,
          *     albumId: ID,
+         *     fullAlbumId: fID,
          *     created: DATE,
          *     url: URL,
          *     thumbUrl: tURL // created from url

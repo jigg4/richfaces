@@ -24,19 +24,30 @@
     xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:r="http://richfaces.org/rich"
     xmlns:richx="http://richfaces.org/richx">
 
+    <r:dataGrid value="#{model.selectedEvent.shelf.images}" var="image" columns="5">
+        <r:commandLink actionListener="#{controller.showImage(image)}" render="mainArea, treePanel">
+            <r:mediaOutput id="img" element="img" createContent="#{imageLoader.paintImage}" style="border : 1px solid #FFFFFF;"
+                mimeType="image/jpeg" value="#{fileManager.transformPath(image.fullPath, '_small200')}">
+            </r:mediaOutput>
+        </r:commandLink>
+    </r:dataGrid>
+
     <r:outputPanel id="photoPanel">
         <r:dataGrid rendered="#{fn:length(eventAlbumsHelper.eventPhotos) > 0}" value="#{eventAlbumsHelper.eventPhotos}"
             var="photo" columns="5" id="photos">
             <r:outputPanel>
-                <h:graphicImage id="img" url="#{photo.getString('thumbUrl')}" style="max-width: 140px; max-height: 140px"
-                    styleClass="album-cover-image" />
-                <!-- <h:outputText value="#{photo.toString()}" /> -->
+                <r:commandLink execute="@this" actionListener="#{controller.showGPlusImage(photo.getString('id'))}"
+                    render="mainArea">
+                    <h:graphicImage id="img" url="#{photo.getString('thumbUrl')}" style="max-width: 180px; max-height: 180px"
+                        styleClass="album-cover-image" />
+                    <r:param assignTo="#{googlePlusAlbumCache.currentAlbumId}" value="#{photo.getString('fullAlbumId')}" />
+                </r:commandLink>
             </r:outputPanel>
-            <f:facet name="footer">
-                <r:dataScroller />
-            </f:facet>
         </r:dataGrid>
     </r:outputPanel>
+
+    <h:outputText value="No photos available."
+        rendered="#{fn:length(model.selectedEvent.remoteAlbums) + fn:length(model.selectedEvent.shelf.albums) == 0}" />
 
     <!-- JavaScript -->
     <r:jsFunction name="initHelper" actionListener="#{eventAlbumsHelper.init()}" execute="@this" render="gImagePoll, photoPanel" />
@@ -54,7 +65,7 @@
                 });
     </h:outputScript>
 
-    <r:poll interval="1000" id="gImagePoll" enabled="#{eventAlbumsHelper.pollEnabled}"
+    <r:poll interval="500" id="gImagePoll" enabled="#{eventAlbumsHelper.pollEnabled}"
         ontimer="if(#{eventAlbumsHelper.nextId != '0'}){G.getAlbumAndPhotos('#{eventAlbumsHelper.nextId}', processAlbum); enablePoll(false);}"
         execute="@this" render="@this" />
 
