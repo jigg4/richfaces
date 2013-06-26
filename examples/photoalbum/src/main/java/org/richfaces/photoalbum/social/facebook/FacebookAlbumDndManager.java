@@ -81,7 +81,7 @@ public class FacebookAlbumDndManager implements Serializable, DropListener {
         this.event = (Event) event.getDropValue();
 
         // check if the album is already shared
-        if (this.event.getFacebookAlbums().contains(albumId)) {
+        if (this.event.getRemoteAlbums().contains(albumId)) {
             setAlbumAlreadyShared(true);
             error.fire(new ErrorEvent("This album is already shared in this event"));
             return;
@@ -106,7 +106,7 @@ public class FacebookAlbumDndManager implements Serializable, DropListener {
     }
 
     public void shareAlbum() {
-        event.getFacebookAlbums().add(albumId);
+        event.getRemoteAlbums().add(albumId);
 
         try {
             ea.editEvent(event);

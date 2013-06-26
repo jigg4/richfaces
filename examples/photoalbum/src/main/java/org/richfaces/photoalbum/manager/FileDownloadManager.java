@@ -176,8 +176,8 @@ public class FileDownloadManager implements Serializable {
         }
 
         // remove the FB album from the event
-        if (event.getFacebookAlbums().contains(albumId)) {
-            event.getFacebookAlbums().remove(albumId);
+        if (event.getRemoteAlbums().contains(albumId)) {
+            event.getRemoteAlbums().remove(albumId);
         }
 
         try {

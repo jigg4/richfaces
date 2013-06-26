@@ -44,7 +44,6 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.richfaces.photoalbum.util.ListUtils;
 
 //import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -172,7 +171,7 @@ public class Event implements Serializable {
     private Shelf shelf;
 
     @ElementCollection(fetch=FetchType.EAGER)
-    private List<String> facebookAlbums = new ArrayList<String>();
+    private List<String> remoteAlbums = new ArrayList<String>();
 
     /* Boilerplate getters and setters */
 
@@ -217,17 +216,17 @@ public class Event implements Serializable {
     }
 
 
-    public List<String> getFacebookAlbums() {
-        return facebookAlbums;
+    public List<String> getRemoteAlbums() {
+        return remoteAlbums;
     }
 
-    public void setFacebookAlbums(List<String> facebookAlbums) {
-        this.facebookAlbums = facebookAlbums;
+    public void setRemoteAlbums(List<String> remoteAlbums) {
+        this.remoteAlbums = remoteAlbums;
     }
 
-    public String getFbAlbumIds() {
-        return ListUtils.sListToString(facebookAlbums);
-    }
+//    public String getFbAlbumIds() {
+//        return ListUtils.sListToString(facebookAlbums);
+//    }
 
     /* toString(), equals() and hashCode() for Event, using the natural identity of the object */
 
