@@ -177,10 +177,12 @@ public class FileDownloadManager implements Serializable {
             error.fire(new ErrorEvent("Error", "error saving album<br/>" + pae.getMessage()));
         }
 
-        // remove the FB album from the event
-        if (event.getRemoteAlbums().contains(albumId)) {
-            event.getRemoteAlbums().remove(albumId);
-        }
+        // remove the remote album from the event
+        if (event.getRemoteAlbumIds().contains("F" + albumId)) {
+            event.getRemoteAlbumIds().remove("F" + albumId);
+        } else if (event.getRemoteAlbumIds().contains("G" + albumId)) {
+            event.getRemoteAlbumIds().remove("G" + albumId);
+        } 
 
         try {
             eventAction.editEvent(event);

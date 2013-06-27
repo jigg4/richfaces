@@ -47,7 +47,7 @@
     </r:outputPanel>
 
     <h:outputText value="No photos available."
-        rendered="#{fn:length(model.selectedEvent.remoteAlbums) + fn:length(model.selectedEvent.shelf.albums) == 0}" />
+        rendered="#{fn:length(model.selectedEvent.remoteAlbumIds) + fn:length(model.selectedEvent.shelf.albums) == 0}" />
 
     <!-- JavaScript -->
     <r:jsFunction name="initHelper" actionListener="#{eventAlbumsHelper.init()}" execute="@this" render="gImagePoll, photoPanel" />

@@ -36,7 +36,7 @@ public class EventAlbumsHelper implements Serializable {
         emptyAlbumIds = new LinkedList<String>();
         eventAlbumIds = new ArrayList<String>();
 
-        eventAlbumIds = model.getSelectedEvent().getRemoteAlbums();
+        eventAlbumIds = model.getSelectedEvent().getGooglePlusAlbumIds();
 
         for (String fullId : eventAlbumIds) {
             if (!gpac.isAlbumLoaded(fullId)) {
