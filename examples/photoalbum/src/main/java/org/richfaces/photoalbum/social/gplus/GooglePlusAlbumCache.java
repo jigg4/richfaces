@@ -95,10 +95,15 @@ public class GooglePlusAlbumCache {
                 // these images are already cached
                 return;
             }
+            
+            int size = ja.length();
+            
+            // put size in the album
+            albums.get(albumId).put("size", size);
 
             images.put(albumId, new HashMap<String, JSONObject>());
 
-            for (int i = 0; i < ja.length(); i++) {
+            for (int i = 0; i < size; i++) {
                 jo = ja.getJSONObject(i);
 
                 if (!jo.has("albumId") || !jo.has("id")) {
@@ -191,6 +196,9 @@ public class GooglePlusAlbumCache {
             jAlbum.remove("images");
 
             String albumId = jAlbum.getString("fullId");
+            int size = albumImages.length();
+            
+            jAlbum.put("size", size);
             albums.put(albumId, jAlbum);
             images.put(albumId, new HashMap<String, JSONObject>());
 
