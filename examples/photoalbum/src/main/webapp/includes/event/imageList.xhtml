@@ -32,7 +32,7 @@
         </r:commandLink>
     </r:dataGrid>
 
-    <r:outputPanel id="photoPanel">
+    <r:outputPanel id="photoPanel" rendered="#{userBean.loggedInGPlus}">
         <r:dataGrid rendered="#{fn:length(eventAlbumsHelper.eventPhotos) > 0}" value="#{eventAlbumsHelper.eventPhotos}"
             var="photo" columns="5" id="photos">
             <r:outputPanel>

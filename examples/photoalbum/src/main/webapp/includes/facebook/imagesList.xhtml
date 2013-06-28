@@ -1,0 +1,84 @@
+<!--
+  JBoss, Home of Professional Open Source
+  Copyright 2013, Red Hat, Inc. and individual contributors
+  by the @authors tag. See the copyright.txt in the distribution for a
+  full listing of individual contributors.
+
+  This is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation; either version 2.1 of
+  the License, or (at your option) any later version.
+
+  This software is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this software; if not, write to the Free
+  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:r="http://richfaces.org/rich"
+    xmlns:richx="http://richfaces.org/richx">
+
+    <r:outputPanel rendered="#{not userBean.loggedInFB}">
+        <h:outputText value="This event has #{fn:length(albumIds)} albums on Facebook, " />
+        <r:commandLink value="#{messages['menu.login']}" render="loginPanel" actionListener="#{userBean.reset()}"
+            oncomplete="#{r:component('loginPanel')}.show();" />
+        <h:outputText value=" to see them." />
+    </r:outputPanel>
+
+    <r:outputPanel id="fbAlbums" rendered="#{userBean.loggedInFB}">
+        <h:outputText value="Albums are loading" rendered="#{not facebookAlbumCache.areAlbumsLoaded(albumIds)}" />
+        <br style="clear: both" />
+
+        <r:dataGrid value="#{albumIds}" var="albumId">
+            <r:repeat value="#{facebookAlbumCache.getPhotosFromAlbum(albumId)}" var="photo">
+                <r:commandLink execute="@this" actionListener="#{controller.showFbImage(photo.getString('id'))}"
+                    render="mainArea">
+                    <h:graphicImage id="img" url="#{photo.getString('src')}" style="max-width: 180px; max-height: 180px"
+                        styleClass="album-cover-image" />
+                    <r:param assignTo="#{facebookAlbumCache.currentAlbumId}" value="#{photo.getString('aid')}" />
+                </r:commandLink>
+            </r:repeat>
+        </r:dataGrid>
+
+        <br style="clear: both" />
+        <r:progressBar id="pBar" value="#{fileDownloadManager.value}" minValue="0" maxValue="100"
+            enabled="#{fileDownloadManager.hasNext()}" interval="1000">
+            <f:facet name="initial">
+                <h:outputText value="" />
+            </f:facet>
+            <h:outputText value="Importing #{fileDownloadManager.text}" />
+            <r:ajax event="begin" listener="#{fileDownloadManager.downloadNext()}" />
+            <r:ajax event="finish" oncomplete="finishImport()" />
+        </r:progressBar>
+
+        <!-- **Album fetching** -->
+        <!-- save the albums and images into the cache bean, then reload the image list -->
+        <r:jsFunction name="setFBimages" oncomplete="reloadAlbums()" execute="@this">
+            <r:param assignTo="#{facebookAlbumCache.all}" name="response" />
+        </r:jsFunction>
+
+        <!-- reload the r:repeat to show loaded albums -->
+        <r:jsFunction name="reloadAlbums" render="fbAlbums" execute="@this" />
+
+        <!-- if albums aren't loaded, get the albums from Facebook -->
+        <h:outputScript rendered="#{facebookAlbumCache.needsUpdate}">    
+                $(document).ready(function() {
+                    FBgetAlbumsById( "#{albumString}", setFBimages, showError);
+                });
+        </h:outputScript>
+
+        <ui:include src="/includes/facebook/albumImport.xhtml" />
+
+        <!-- **Image import** -->
+        <r:jsFunction name="finishImport" render="pBar" execute="@this" actionListener="#{fileDownloadManager.finishDownload()}"
+            oncomplete="reload();" />
+
+    </r:outputPanel>
+</ui:composition>
